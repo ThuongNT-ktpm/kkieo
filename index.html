@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tạo link thiệp - THƯ MỜI CƯỚI MẪU ĐỎ VÀNG</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #fbf7f3;
+        --card: #fff;
+        --accent: #b8866b;
+        --muted: #6b6b6b;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, Arial;
+        background: linear-gradient(180deg, var(--bg), #fff);
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        color: #333;
+      }
+      .card {
+        width: 100%;
+        max-width: 520px;
+        background: var(--card);
+        border-radius: 14px;
+        padding: 32px;
+        box-shadow: 0 8px 30px rgba(30, 30, 30, 0.08);
+        text-align: center;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+        color: var(--accent);
+        font-size: 28px;
+      }
+      p.lead {
+        margin: 0 0 20px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .input-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      input#guest-input {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+        font-size: 16px;
+      }
+      button.btn {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        padding: 10px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .result {
+        margin-top: 18px;
+        display: none;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      .link-box {
+        width: 100%;
+        background: #f7f3f1;
+        padding: 12px 14px;
+        border-radius: 8px;
+        word-break: break-all;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .copy-btn {
+        background: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .note {
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+      .success {
+        color: green;
+        font-size: 13px;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" role="main" aria-labelledby="title">
+      <h1 id="title">Nhập tên khách mời</h1>
+      <p class="lead">Tạo link cho thiệp "THƯ MỜI CƯỚI "</p>
+
+      <div class="input-row">
+        <input
+          id="guest-input"
+          type="text"
+          placeholder="Ví dụ: Nguyễn Văn A"
+          aria-label="Tên khách mời"
+        />
+        <button id="generate-btn" class="btn">Tạo link thiệp</button>
+      </div>
+
+      <div id="result" class="result" aria-live="polite">
+        <div class="link-box">
+          <a
+            id="generated-link"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          ></a>
+          <button id="copy-btn" class="copy-btn">Copy link</button>
+        </div>
+        <div id="copy-msg" class="success" style="display: none">
+          Đã sao chép vào clipboard ✅
+        </div>
+        <div class="note">Copyright © 2025 by Nguyen Tien Thuong</div>
+      </div>
+    </div>
+
+    <script>
+      // ===== TÙY CHỈNH: thay giá trị này thành URL thực của bạn =====
+      const BASE_URL = "Marry.html"; // <--- đổi thành đường dẫn tuyệt đối nếu cần (ví dụ https://example.com/AnhTuvaDieuNhi.html)
+      // =============================================================
+
+      const input = document.getElementById("guest-input");
+      const btn = document.getElementById("generate-btn");
+      const result = document.getElementById("result");
+      const genLink = document.getElementById("generated-link");
+      const copyBtn = document.getElementById("copy-btn");
+      const copyMsg = document.getElementById("copy-msg");
+
+      function createLink() {
+        const name = input.value.trim();
+        if (!name) {
+          input.focus();
+          return;
+        }
+        const encoded = encodeURIComponent(name);
+        const url = `${BASE_URL}?guest=${encoded}`;
+        genLink.href = url;
+        genLink.textContent = url;
+        result.style.display = "flex";
+        copyMsg.style.display = "none";
+      }
+
+      btn.addEventListener("click", createLink);
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") createLink();
+      });
+
+      copyBtn.addEventListener("click", async function () {
+        const url = genLink.textContent;
+        if (!url) return;
+        try {
+          await navigator.clipboard.writeText(url);
+          copyMsg.style.display = "block";
+          setTimeout(() => (copyMsg.style.display = "none"), 2000);
+        } catch (err) {
+          const tmp = document.createElement("textarea");
+          tmp.value = url;
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand("copy");
+          document.body.removeChild(tmp);
+          copyMsg.style.display = "block";
+          setTimeout(() => (copyMsg.style.display = "none"), 2000);
+        }
+      });
+    </script>
+  </body>
+</html>
